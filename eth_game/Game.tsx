@@ -1,4 +1,4 @@
-import { forwardRef, useEffect, useLayoutEffect, useRef } from 'react';
+import { forwardRef, useEffect, useLayoutEffect, useRef, useState } from 'react';
 import StartGame from './main';
 import { EventBus } from './EventBus';
 
@@ -13,6 +13,7 @@ interface IProps {
 
 export const EthGame = forwardRef<IRefPhaserGame, IProps>(function PhaserGame({ currentActiveScene }, ref) {
     const game = useRef<Phaser.Game | null>(null!);
+    const [loading, setLoading] = useState(true);
 
     useLayoutEffect(() => {
         if (game.current === null) {
@@ -56,6 +57,7 @@ export const EthGame = forwardRef<IRefPhaserGame, IProps>(function PhaserGame({ 
             }
 
         });
+        setLoading(false);
         return () => {
 
             EventBus.removeListener('current-scene-ready');
