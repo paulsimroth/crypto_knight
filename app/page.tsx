@@ -2,7 +2,7 @@
 import { useRef } from 'react';
 import { IRefPhaserGame, PhaserGame } from '../game/PhaserGame';
 
-function App() {
+function Main() {
 
     //  References to the PhaserGame component (game and scene are exposed)
     const phaserRef = useRef<IRefPhaserGame | null>(null);
@@ -22,7 +22,7 @@ function App() {
 
             }
         }
-    }
+    };
 
     return (
         <div id="app">
@@ -33,7 +33,7 @@ function App() {
                 </div>
             </div>
         </div>
-    )
-}
+    );
+};
 
-export default App
+export default Main;
