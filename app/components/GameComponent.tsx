@@ -1,7 +1,8 @@
 'use client';
-import { useRef } from "react";
+import { Suspense, useRef } from "react";
 import { EthGame, IRefPhaserGame } from "../../eth_game/Game";
 import { Button } from "./ui/button";
+import Image from "next/image";
 
 function GameComponent() {
     //  References to the PhaserGame component (game and scene are exposed)
@@ -18,7 +19,7 @@ function GameComponent() {
                 const y = Phaser.Math.Between(64, scene.scale.height - 64);
 
                 //  `add.sprite` is a Phaser GameObjectFactory method and it returns a Sprite Game Object instance
-                scene.add.sprite(x, y, 'star');
+                scene.add.sprite(x, y, 'bitcoin');
 
             }
         }
@@ -26,7 +27,11 @@ function GameComponent() {
 
     return (
         <div className="w-full h-[80vh] flex flex-col items-center justify-center">
-            <EthGame ref={phaserRef} />
+            <Suspense fallback={<GameLoader />}>
+                <div className="border-8 border-secondary rounded-md">
+                    <EthGame ref={phaserRef} />
+                </div>
+            </Suspense>
             <div>
                 <Button onClick={addSprite}>
                     Add New Sprite
@@ -36,4 +41,18 @@ function GameComponent() {
     );
 }
 
-export default GameComponent
+export default GameComponent;
+
+
+function GameLoader() {
+    return (
+        <div className="w-[1000px] h-[700px] bg-secondary rounded-lg p-1">
+            <Image
+                src="/assets/background.png"
+                width={1000}
+                height={700}
+                alt="Loader"
+            />
+        </div>
+    )
+}

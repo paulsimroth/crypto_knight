@@ -8,10 +8,16 @@ const config: Types.Core.GameConfig = {
     width: 1000,
     height: 700,
     parent: 'game-container',
-    backgroundColor: '#028af8',
     scene: [
         MainGame
-    ]
+    ],
+    physics: {
+        default: 'arcade'
+    },
+    autoFocus: false,
+    input: {
+        keyboard: true
+    }
 };
 
 const StartGame = (parent: string) => {

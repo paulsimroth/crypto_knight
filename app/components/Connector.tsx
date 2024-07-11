@@ -1,4 +1,5 @@
 'use client';
+import { formatEthAddress } from "@/lib/wagmi";
 import { Button } from "./ui/button";
 import { useAccount, useConnect } from "wagmi";
 import { injected } from "wagmi/connectors";
@@ -9,13 +10,13 @@ function Connector() {
     const { address } = useAccount();
 
     return (
-        <Button size="lg" onClick={() => connect({ connector: injected() })} variant={address ? "outline" : "ghost"}>
+        <Button size="lg" onClick={() => connect({ connector: injected() })} variant={address ? "outline" : "default"}>
             {address
-                ? `${address.slice(0, 6)}...${address.slice(-4)}`
+                ? formatEthAddress(address)
                 : "CONNECT WALLET"}
         </Button>
 
     )
-}
+};
 
-export default Connector
+export default Connector;

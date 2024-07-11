@@ -67,7 +67,7 @@ export class Game extends Scene {
         let GAME_SECONDS = 1000;
 
         //background
-        this.add.image(500, 350, "background").setSize(1200, 800);
+        this.add.image(500, 350, "background");
 
         //Knight created, hitbox size set, knight scaled
         knight = this.physics.add.sprite(100, 100, "knight");
@@ -142,6 +142,8 @@ export class Game extends Scene {
             [570, 400],
             [710, 510],
             [790, 300],
+            [870, 300],
+            [900, 710],
         ];
         platformPositions.forEach((pos) => crates.create(pos[0], pos[1], 'crate'));
 
