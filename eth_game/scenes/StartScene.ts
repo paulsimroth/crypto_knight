@@ -21,16 +21,23 @@ export class StartScene extends Scene {
         this.add.image(GAME_WIDTH / 2, GAME_HEIGHT / 2, 'background');
 
         this.add.text(GAME_WIDTH / 2, GAME_HEIGHT / 3, 'Crypto Knight', {
-            font: '48px Arial',
-            color: '#000000'
+            fontFamily: 'Arial Black', fontSize: 53, color: '#ffffff',
+            stroke: '#000000', strokeThickness: 8,
+            align: 'center'
         }).setOrigin(0.5);
 
         const startButton = this.add.text(GAME_WIDTH / 2, GAME_HEIGHT / 2, 'Start Game', {
-            font: '32px Arial',
-            color: '#FFFFFF',
+            fontFamily: 'Arial Black', fontSize: 35, color: '#ffffff',
+            stroke: '#000000', strokeThickness: 8,
             backgroundColor: '#0000FF',
             padding: { x: 20, y: 10 }
         }).setOrigin(0.5).setInteractive();
+
+        this.add.text(512, 490, 'Start your adventure to collect as many coins as you can!', {
+            fontFamily: 'Arial Black', fontSize: 26, color: '#ffffff',
+            stroke: '#000000', strokeThickness: 8,
+            align: 'center'
+        }).setOrigin(0.5).setDepth(100);
 
         startButton.on('pointerdown', () => {
             this.scene.start('EthGame');
