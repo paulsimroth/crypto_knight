@@ -25,16 +25,25 @@ function GameComponent() {
         }
     };
 
+    const startGame = () => {
+        if (phaserRef.current) {
+            const scene = phaserRef.current.scene;
+        }
+    }
+
     return (
         <div className="w-full h-[80vh] flex flex-col items-center justify-center">
             <Suspense fallback={<GameLoader />}>
-                <div className="border-8 border-secondary rounded-md">
+                <div className="border-8 border-secondary rounded-md mt-[10lvh]">
                     <EthGame ref={phaserRef} />
                 </div>
             </Suspense>
             <div>
                 <Button onClick={addSprite}>
                     Add New Sprite
+                </Button>
+                <Button onClick={startGame}>
+                    START
                 </Button>
             </div>
         </div>

@@ -2,6 +2,7 @@ import { Scene } from 'phaser';
 import { EventBus } from '../EventBus';
 export class Game extends Scene {
     scoreText: any;
+    private gridEngine!: any;
 
     constructor() {
         super('Game');
@@ -47,6 +48,7 @@ export class Game extends Scene {
         let cursors;
         let knight;
         let crates;
+        let map;
 
         let coinTimer;
         let coins;
@@ -67,13 +69,16 @@ export class Game extends Scene {
         let GAME_SECONDS = 1000;
 
         //background
-        this.add.image(500, 350, "background");
+        map = this.add.image(500, 350, "background");
 
         //Knight created, hitbox size set, knight scaled
-        knight = this.physics.add.sprite(100, 100, "knight");
+        knight = this.physics.add.sprite(100, 0, "knight");
         knight.body.setSize(400, 600);
         knight.scaleX = 0.15;
         knight.scaleY = 0.15;
+
+        // Follow the knight around the scene
+        //this.cameras.main.startFollow(knight, true);
 
         //Floor created out of crates
         crates = this.physics.add.staticGroup();
@@ -180,41 +185,51 @@ export class Game extends Scene {
                     repeat: -1
                 }); */
 
+        const gridEngineConfig = {
+            characters: [
+                {
+                    id: "Knight",
+                    sprite: knight,
+                    startPosition: { x: 8, y: 8 }
+                }
+            ]
+        }
 
+        this.gridEngine.create(map, gridEngineConfig);
+        this.gridEngine.movementStarted().subscribe(({ direction }: any) => {
+            knight.anims.play(direction);
+        })
 
         EventBus.emit('current-scene-ready', this);
+    }
+
+    update(): void {
+        const cursors = this.input.keyboard!.createCursorKeys();
+        const knight = this.gridEngine.characters[0];
+        //changed by super boots
+        let PLAYER_SPEED_VARIABLE = 200;
+
+        if (cursors!.left.isDown) {
+            knight.setVelocityX(-PLAYER_SPEED_VARIABLE);
+            knight.play("knight_run", true);
+            knight.flipX = true;
+        }
+        else if (cursors!.right.isDown) {
+            knight.setVelocityX(PLAYER_SPEED_VARIABLE);
+            knight.play("knight_run", true);
+            knight.flipX = false;
+        }
+        else {
+            knight.setVelocityX(0);
+            knight.play("knight_idle", true)
+        }
+
+        if (cursors!.up.isDown && knight.body.touching.down) {
+            knight.setVelocityY(-350);
+        }
 
     }
 
-    /**
-    * This method should be overridden by your own Scenes.
-    * 
-    * This method is called once per game step while the scene is running.
-    * @param time The current time. Either a High Resolution Timer value if it comes from Request Animation Frame, or Date.now if using SetTimeout.
-    * @param delta The delta time in ms since the last frame. This is a smoothed and capped value based on the FPS rate.
-    */
-    /*     update(time: number, delta: number): void {
-            if (cursors.left.isDown) {
-                knight.setVelocityX(-PLAYER_SPEED_VARIABLE);
-                knight.play("knight_run", true);
-                knight.flipX = true;
-            }
-            else if (cursors.right.isDown) {
-                knight.setVelocityX(PLAYER_SPEED_VARIABLE);
-                knight.play("knight_run", true);
-                knight.flipX = false;
-            }
-            else {
-                knight.setVelocityX(0);
-                knight.play("knight_idle", true)
-            }
-    
-            if (cursors.up.isDown && knight.body.touching.down) {
-                knight.setVelocityY(-350);
-            }
-    
-        }
-     */
     /*     physics() { }
     
         events() { }
