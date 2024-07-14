@@ -1,145 +1,71 @@
 import { Scene } from 'phaser';
 import { EventBus } from '../EventBus';
-export class Game extends Scene {
-    scoreText: any;
-    private gridEngine!: any;
+import { GAME_HEIGHT, GAME_WIDTH } from 'eth_game/main';
+import { mintAfterGame } from '@/lib/web3Service';
+
+type Knight = Phaser.Physics.Arcade.Sprite;
+type TimerEvent = Phaser.Time.TimerEvent;
+
+const OFF_SCREEN_TIMEOUT = 3000; // 3 seconds in milliseconds
+
+// Variables changed by special items
+let COIN_GENERATION_INTERVAL = 4000;
+let PLAYER_SPEED_VARIABLE = 200;
+let GAME_SECONDS = 1000;
+
+export class EthGame extends Scene {
+    cursors: any;
+    knight: Knight;
+    crates: Phaser.Physics.Arcade.StaticGroup;
+    coinTimer: TimerEvent;
+    coins: Phaser.Physics.Arcade.Group;
+    score: number = 0;
+    scoreText: Phaser.GameObjects.Text;
+    secondsLeft: number = 60;
+    timeLeftText: Phaser.GameObjects.Text;
+    timeLeftTimer: TimerEvent;
+    gameOver: boolean = false;
+    coinsSent: boolean = false;
+    offScreenTimer: TimerEvent | null = null;
+    gameOverText: Phaser.GameObjects.Text | null = null;
 
     constructor() {
-        super('Game');
+        super({ key: 'EthGame' });
     }
 
     preload() {
-        this.load.setPath('assets');
+        this.load.image("knight", "assets/knight.png");
+        this.load.image("background", "assets/background.png");
+        this.load.image("crate", "assets/crate.png");
+        this.load.image("bitcoin", "assets/bitcoin.png");
 
-        //Images loaded
-        this.load.image("knight", "knight.png");
-        this.load.image("background", "background.png");
-        this.load.image("crate", "crate.png");
-        this.load.image("bitcoin", "bitcoin.png");
+        // Load running animation frames
+        for (let i = 1; i <= 10; i++) {
+            this.load.image(`knight_runFrame_${i}`, `assets/knight/run/Run (${i}).png`);
+        }
 
-        //Load running animation frames
-        this.load.image("knight_runFrame_1", "knight/run/Run (1).png");
-        this.load.image("knight_runFrame_2", "knight/run/Run (2).png");
-        this.load.image("knight_runFrame_3", "knight/run/Run (3).png");
-        this.load.image("knight_runFrame_4", "knight/run/Run (4).png");
-        this.load.image("knight_runFrame_5", "knight/run/Run (5).png");
-        this.load.image("knight_runFrame_6", "knight/run/Run (6).png");
-        this.load.image("knight_runFrame_7", "knight/run/Run (7).png");
-        this.load.image("knight_runFrame_8", "knight/run/Run (8).png");
-        this.load.image("knight_runFrame_9", "knight/run/Run (9).png");
-        this.load.image("knight_runFrame_10", "knight/run/Run (10).png");
-
-        //Load idle animation frames
-        this.load.image("knight_idleFrame_1", "knight/idle/Idle (1).png");
-        this.load.image("knight_idleFrame_2", "knight/idle/Idle (2).png");
-        this.load.image("knight_idleFrame_3", "knight/idle/Idle (3).png");
-        this.load.image("knight_idleFrame_4", "knight/idle/Idle (4).png");
-        this.load.image("knight_idleFrame_5", "knight/idle/Idle (5).png");
-        this.load.image("knight_idleFrame_6", "knight/idle/Idle (6).png");
-        this.load.image("knight_idleFrame_7", "knight/idle/Idle (7).png");
-        this.load.image("knight_idleFrame_8", "knight/idle/Idle (8).png");
-        this.load.image("knight_idleFrame_9", "knight/idle/Idle (9).png");
-        this.load.image("knight_idleFrame_10", "knight/idle/Idle (10).png");
+        // Load idle animation frames
+        for (let i = 1; i <= 10; i++) {
+            this.load.image(`knight_idleFrame_${i}`, `assets/knight/idle/Idle (${i}).png`);
+        }
     }
 
     create() {
+        // Background
+        this.add.image(GAME_WIDTH / 2, GAME_HEIGHT / 2, "background");
 
-        //Variables
-        let cursors;
-        let knight;
-        let crates;
-        let map;
+        // Create knight
+        this.knight = this.physics.add.sprite(100, 100, "knight");
+        if (this.knight.body) {
+            this.knight.body.setSize(400, 600);
+        }
+        this.knight.scaleX = 0.15;
+        this.knight.scaleY = 0.15;
 
-        let coinTimer;
-        let coins;
-
-
-
-        let secondsLeft = 60;
-        let timeLeftText;
-        let timeLeftTimer;
-        let gameOver = false;
-        let coinsSent = false;
-
-        //changed by pump talisman
-        let COIN_GENERATION_INTERVALL = 4000;
-        //changed by super boots
-        let PLAYER_SPEED_VARIABLE = 200;
-        //changed by time warp cape
-        let GAME_SECONDS = 1000;
-
-        //background
-        map = this.add.image(500, 350, "background");
-
-        //Knight created, hitbox size set, knight scaled
-        knight = this.physics.add.sprite(100, 0, "knight");
-        knight.body.setSize(400, 600);
-        knight.scaleX = 0.15;
-        knight.scaleY = 0.15;
-
-        // Follow the knight around the scene
-        //this.cameras.main.startFollow(knight, true);
-
-        //Floor created out of crates
-        crates = this.physics.add.staticGroup();
-
-        //Floor
-        crates.create(40, 560, "crate");
-        crates.create(120, 560, "crate");
-        crates.create(200, 560, "crate");
-        crates.create(280, 560, "crate");
-        crates.create(360, 560, "crate");
-        crates.create(440, 560, "crate");
-        crates.create(790, 560, "crate");
-
-        //Platforms
-        crates.create(200, 280, "crate");
-        crates.create(300, 360, "crate");
-        crates.create(490, 460, "crate");
-        crates.create(570, 400, "crate");
-        crates.create(710, 510, "crate");
-        crates.create(790, 300, "crate");
-
-        //animations
-        this.anims.create({
-            key: "knight_run",
-            frames: [
-                { key: "knight_runFrame_1" },
-                { key: "knight_runFrame_2" },
-                { key: "knight_runFrame_3" },
-                { key: "knight_runFrame_4" },
-                { key: "knight_runFrame_5" },
-                { key: "knight_runFrame_6" },
-                { key: "knight_runFrame_7" },
-                { key: "knight_runFrame_8" },
-                { key: "knight_runFrame_9" },
-                { key: "knight_runFrame_10" }
-            ],
-            frameRate: 10,
-            repeat: 1
-        });
-
-        this.anims.create({
-            key: "knight_idle",
-            frames: [
-                { key: "knight_idleFrame_1" },
-                { key: "knight_idleFrame_2" },
-                { key: "knight_idleFrame_3" },
-                { key: "knight_idleFrame_4" },
-                { key: "knight_idleFrame_5" },
-                { key: "knight_idleFrame_6" },
-                { key: "knight_idleFrame_7" },
-                { key: "knight_idleFrame_8" },
-                { key: "knight_idleFrame_9" },
-                { key: "knight_idleFrame_10" }
-            ],
-            frameRate: 10,
-            repeat: 1
-        });
-
-        //Collider set for knight and floor
-        this.physics.add.collider(crates, knight);
-
+        // Create floor and platforms
+        this.crates = this.physics.add.staticGroup();
+        const floorPositions = [40, 120, 200, 280, 360, 440, 790];
+        floorPositions.forEach(pos => this.crates.create(pos, 560, "crate"));
         const platformPositions = [
             [200, 280],
             [300, 360],
@@ -147,92 +73,168 @@ export class Game extends Scene {
             [570, 400],
             [710, 510],
             [790, 300],
-            [870, 300],
-            [900, 710],
         ];
-        platformPositions.forEach((pos) => crates.create(pos[0], pos[1], 'crate'));
+        platformPositions.forEach(pos => this.crates.create(pos[0], pos[1], "crate"));
 
-        //Score Text
-        /*         scoreText = this.add.text(512, 490, 'Bitcoin Bag: 0', {
-                    fontFamily: 'Arial Black', fontSize: 38, color: '#000',
-                    stroke: '#000000', strokeThickness: 8,
-                    align: 'center'
-                }).setOrigin(0.5).setDepth(100);
-        
-                //Time Left Text
-                timeLeftText = this.add.text(512, 490, secondsLeft + " Seconds left", {
-                    fontFamily: 'Arial Black', fontSize: 38, color: '#000',
-                    stroke: '#000000', strokeThickness: 8,
-                    align: 'center'
-                }).setOrigin(0.5).setDepth(100); */
+        // Animations
+        this.anims.create({
+            key: "knight_run",
+            frames: Array.from({ length: 10 }, (_, i) => ({ key: `knight_runFrame_${i + 1}` })),
+            frameRate: 10,
+            repeat: 1
+        });
+        this.anims.create({
+            key: "knight_idle",
+            frames: Array.from({ length: 10 }, (_, i) => ({ key: `knight_idleFrame_${i + 1}` })),
+            frameRate: 10,
+            repeat: 1
+        });
 
-        //Keyboard inputs
-        /*         cursors = this.input.keyboard.createCursorKeys();
-        
-                //Timer for generating coins
-                coinTimer = this.time.addEvent({
-                    delay: COIN_GENERATION_INTERVALL,
-                    callback: generateCoins,
-                    callbackScope: this,
-                    repeat: -1
-                });
-        
-                //Timer for time left
-                timeLeftTimer = this.time.addEvent({
-                    delay: GAME_SECONDS,
-                    callback: updateTimeLeft,
-                    callbackScope: this,
-                    repeat: -1
-                }); */
+        // Collider
+        this.physics.add.collider(this.crates, this.knight);
 
-        const gridEngineConfig = {
-            characters: [
-                {
-                    id: "Knight",
-                    sprite: knight,
-                    startPosition: { x: 8, y: 8 }
-                }
-            ]
-        }
+        // Score and Time Text
+        this.scoreText = this.add.text(6, 16, "Bitcoin Bag: 0", { fontSize: "32px", color: "#000000" });
+        this.createGameOverText();
+        this.timeLeftText = this.add.text(6, 56, `${this.secondsLeft} Seconds left`, { fontSize: "30px", color: "#000000" });
 
-        this.gridEngine.create(map, gridEngineConfig);
-        this.gridEngine.movementStarted().subscribe(({ direction }: any) => {
-            knight.anims.play(direction);
-        })
+        // Keyboard inputs
+        this.cursors = this.input.keyboard!.createCursorKeys();
+
+        // Timers
+        this.coinTimer = this.time.addEvent({
+            delay: COIN_GENERATION_INTERVAL,
+            callback: this.generateCoins,
+            callbackScope: this,
+            repeat: -1
+        });
+        this.timeLeftTimer = this.time.addEvent({
+            delay: GAME_SECONDS,
+            callback: this.updateTimeLeft,
+            callbackScope: this,
+            repeat: -1
+        });
 
         EventBus.emit('current-scene-ready', this);
     }
 
-    update(): void {
-        const cursors = this.input.keyboard!.createCursorKeys();
-        const knight = this.gridEngine.characters[0];
-        //changed by super boots
-        let PLAYER_SPEED_VARIABLE = 200;
-
-        if (cursors!.left.isDown) {
-            knight.setVelocityX(-PLAYER_SPEED_VARIABLE);
-            knight.play("knight_run", true);
-            knight.flipX = true;
-        }
-        else if (cursors!.right.isDown) {
-            knight.setVelocityX(PLAYER_SPEED_VARIABLE);
-            knight.play("knight_run", true);
-            knight.flipX = false;
-        }
-        else {
-            knight.setVelocityX(0);
-            knight.play("knight_idle", true)
-        }
-
-        if (cursors!.up.isDown && knight.body.touching.down) {
-            knight.setVelocityY(-350);
-        }
-
+    createGameOverText(): void {
+        this.gameOverText = this.add.text(GAME_WIDTH / 2, GAME_HEIGHT / 2, 'GAME OVER', {
+            fontFamily: 'Arial',
+            fontSize: '35px',
+            color: '#ff0000',
+            align: 'center'
+        });
+        this.gameOverText.setOrigin(0.5);
+        this.gameOverText.setScrollFactor(0);
+        this.gameOverText.setDepth(1000); // Ensure it's on top of other game objects
+        this.gameOverText.setVisible(false);
     }
 
-    /*     physics() { }
-    
-        events() { }
-    
-        time() { } */
-}
+    async updateTimeLeft() {
+        if (this.gameOver) {
+            if (this.gameOverText) {
+                this.gameOverText.setVisible(true);
+            }
+            if (!this.coinsSent) {
+                this.coinsSent = true;
+                await mintAfterGame(this.score);
+            }
+            EventBus.emit('game_finished', this);
+            return;
+        }
+
+        this.secondsLeft -= 1;
+        this.timeLeftText.setText(`${this.secondsLeft} Seconds left`);
+
+        if (this.secondsLeft <= 0) {
+            this.physics.pause();
+            this.gameOver = true;
+        }
+    }
+
+    generateCoins() {
+        this.coins = this.physics.add.group({
+            key: "bitcoin",
+            repeat: 1,
+            setXY: {
+                x: Phaser.Math.Between(0, 900),
+                y: -50,
+                stepX: Phaser.Math.Between(30, 100)
+            }
+        });
+
+        this.coins.children.iterate((child: Phaser.GameObjects.GameObject) => {
+            const coin = child as Phaser.Physics.Arcade.Sprite;
+            coin.setBounceY(Phaser.Math.FloatBetween(0.3, 1.5));
+            return false;
+        });
+
+        this.physics.add.collider(this.coins, this.crates);
+        // @ts-ignore
+        this.physics.add.overlap(this.knight, this.coins, this.collectCoin, null, this);
+    }
+
+    collectCoin(knight: Phaser.Physics.Arcade.Sprite, coin: Phaser.Physics.Arcade.Sprite) {
+        coin.disableBody(true, true);
+        this.score++;
+        this.scoreText.setText("Bitcoin Bag: " + this.score);
+    }
+
+    checkKnightPosition(knight: Knight): void {
+        const knightBounds = knight.getBounds();
+
+        if (
+            knightBounds.left > GAME_WIDTH ||
+            knightBounds.right < 0 ||
+            knightBounds.top > GAME_HEIGHT ||
+            knightBounds.bottom < 0
+        ) {
+            // Knight is off-screen
+            if (this.offScreenTimer === null) {
+                this.offScreenTimer = this.time.delayedCall(OFF_SCREEN_TIMEOUT, () => {
+                    console.log("Game over: Knight was off-screen for too long!");
+                    this.scene.pause();
+
+                    if (this.gameOverText) {
+                        this.gameOverText.setVisible(true);
+                    }
+                });
+            }
+        } else {
+            // Knight is on-screen
+            if (this.offScreenTimer !== null) {
+                this.time.removeEvent(this.offScreenTimer);
+                this.offScreenTimer = null;
+            }
+        }
+    }
+
+    update() {
+        if (this.cursors.left.isDown) {
+            this.knight.setVelocityX(-PLAYER_SPEED_VARIABLE);
+            this.knight.play("knight_run", true);
+            this.knight.flipX = true;
+        }
+        else if (this.cursors.right.isDown) {
+            this.knight.setVelocityX(PLAYER_SPEED_VARIABLE);
+            this.knight.play("knight_run", true);
+            this.knight.flipX = false;
+        }
+        else {
+            this.knight.setVelocityX(0);
+            this.knight.play("knight_idle", true);
+        }
+
+        if (this.cursors.up.isDown && this.knight.body && this.knight.body.touching.down) {
+            this.knight.setVelocityY(-400);
+        }
+
+        if (this.cursors.space.isDown && this.knight.body && this.knight.body.touching.down) {
+            this.knight.setVelocityY(-400);
+        }
+
+        // Check knight's position
+        this.checkKnightPosition(this.knight);
+    }
+};
