@@ -24,7 +24,7 @@ export default function RootLayout({
             <WagmiClientWrapper>
                 <body className=''>
                     <Navbar />
-                    <main className='flex flex-col items-center justify-center bg-background'>
+                    <main className='flex flex-col items-center justify-center bg-background h-fit'>
                         {children}
                     </main>
                 </body>

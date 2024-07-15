@@ -1,5 +1,6 @@
-import { forwardRef, useEffect, useLayoutEffect, useRef, useState } from 'react';
-import StartGame, { GAME_HEIGHT, GAME_WIDTH } from './main';
+'use client';
+import { forwardRef, useEffect, useLayoutEffect, useRef } from 'react';
+import StartGame from './main';
 import { EventBus } from './EventBus';
 
 export interface IRefPhaserGame {
@@ -16,8 +17,7 @@ export const EthGameComponent = forwardRef<IRefPhaserGame, IProps>(function Phas
     const gameContainer = useRef<HTMLDivElement>(null);
 
     useLayoutEffect(() => {
-        if (game.current === null) {
-
+        if (typeof window !== 'undefined' && game.current === null) { // Ensure window is defined
             game.current = StartGame("game-container");
 
             if (typeof ref === 'function') {
@@ -25,7 +25,6 @@ export const EthGameComponent = forwardRef<IRefPhaserGame, IProps>(function Phas
             } else if (ref) {
                 ref.current = { game: game.current, scene: null };
             }
-
         }
 
         return () => {
@@ -41,55 +40,21 @@ export const EthGameComponent = forwardRef<IRefPhaserGame, IProps>(function Phas
     useEffect(() => {
         EventBus.on('current-scene-ready', (scene_instance: Phaser.Scene) => {
             if (currentActiveScene && typeof currentActiveScene === 'function') {
-
                 currentActiveScene(scene_instance);
-
-            }
+            };
 
             if (typeof ref === 'function') {
-
                 ref({ game: game.current, scene: scene_instance });
-
             } else if (ref) {
-
                 ref.current = { game: game.current, scene: scene_instance };
-
-            }
-
+            };
         });
         return () => {
-
             EventBus.removeListener('current-scene-ready');
-
         }
     }, [currentActiveScene, ref]);
 
-
-    /*     useEffect(() => {
-            const config: Phaser.Types.Core.GameConfig = {
-                type: Phaser.AUTO,
-                width: GAME_WIDTH,
-                height: GAME_HEIGHT,
-                parent: game.current,
-                scene: [StartScene, Game],
-                physics: {
-                    default: 'arcade',
-                    arcade: {
-                        gravity: { y: 500 },
-                        debug: false
-                    }
-                }
-            };
-    
-            const game = new Phaser.Game(config);
-    
-            return () => {
-                game.destroy(true);
-            };
-        }, []); */
-
     return (
-        <div id="game-container"></div>
+        <div id="game-container" ref={gameContainer}></div>
     );
-
 });

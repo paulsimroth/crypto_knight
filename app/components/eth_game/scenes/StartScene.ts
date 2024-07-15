@@ -1,19 +1,20 @@
-import { GAME_HEIGHT, GAME_WIDTH } from 'eth_game/main';
+import { GAME_HEIGHT, GAME_WIDTH } from '@/components/eth_game/main';
 import { Scene } from 'phaser';
 
 export class StartScene extends Scene {
-    scoreText: any;
 
     constructor() {
         super('StartScene');
     }
 
     preload() {
-        this.load.setPath('assets');
+        if (typeof window !== 'undefined') {
+            this.load.setPath('assets');
 
-        //Images loaded
-        this.load.image("knight", "knight.png");
-        this.load.image("background", "background.png");
+            //Images loaded
+            this.load.image("knight", "knight.png");
+            this.load.image("background", "background.png");
+        }
     }
 
     create() {

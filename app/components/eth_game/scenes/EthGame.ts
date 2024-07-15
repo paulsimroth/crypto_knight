@@ -1,6 +1,6 @@
 import { Scene } from 'phaser';
 import { EventBus } from '../EventBus';
-import { GAME_HEIGHT, GAME_WIDTH } from 'eth_game/main';
+import { GAME_HEIGHT, GAME_WIDTH } from '@/components/eth_game/main';
 import { mintAfterGame } from '@/lib/web3Service';
 
 type Knight = Phaser.Physics.Arcade.Sprite;
@@ -28,32 +28,38 @@ export class EthGame extends Scene {
     coinsSent: boolean = false;
     offScreenTimer: TimerEvent | null = null;
     gameOverText: Phaser.GameObjects.Text | null = null;
+    gameFinishedText: Phaser.GameObjects.Text | null = null;
 
     constructor() {
-        super({ key: 'EthGame' });
+        super('EthGame');
     }
 
     preload() {
-        this.load.image("knight", "assets/knight.png");
-        this.load.image("background", "assets/background.png");
-        this.load.image("crate", "assets/crate.png");
-        this.load.image("bitcoin", "assets/bitcoin.png");
+        if (typeof window !== 'undefined') {
+            this.load.image("knight", "assets/knight.png");
+            this.load.image("background", "assets/background.png");
+            this.load.image("crate", "assets/crate.png");
+            this.load.image("bitcoin", "assets/bitcoin.png");
 
-        // Load running animation frames
-        for (let i = 1; i <= 10; i++) {
-            this.load.image(`knight_runFrame_${i}`, `assets/knight/run/Run (${i}).png`);
-        }
+            for (let i = 1; i <= 10; i++) {
+                this.load.image(`knight_runFrame_${i}`, `assets/knight/run/Run (${i}).png`);
+            }
 
-        // Load idle animation frames
-        for (let i = 1; i <= 10; i++) {
-            this.load.image(`knight_idleFrame_${i}`, `assets/knight/idle/Idle (${i}).png`);
+            for (let i = 1; i <= 10; i++) {
+                this.load.image(`knight_idleFrame_${i}`, `assets/knight/idle/Idle (${i}).png`);
+            }
         }
     }
 
     create() {
-        // Background
+        /**
+         * BACKGROUND
+         */
         this.add.image(GAME_WIDTH / 2, GAME_HEIGHT / 2, "background");
 
+        /**
+         * KNIGHT
+         */
         // Create knight
         this.knight = this.physics.add.sprite(100, 100, "knight");
         if (this.knight.body) {
@@ -62,7 +68,9 @@ export class EthGame extends Scene {
         this.knight.scaleX = 0.15;
         this.knight.scaleY = 0.15;
 
-        // Create floor and platforms
+        /**
+         * CRATES PLATFORMS
+         */
         this.crates = this.physics.add.staticGroup();
         const floorPositions = [40, 120, 200, 280, 360, 440, 790];
         floorPositions.forEach(pos => this.crates.create(pos, 560, "crate"));
@@ -115,15 +123,19 @@ export class EthGame extends Scene {
             repeat: -1
         });
 
+
         EventBus.emit('current-scene-ready', this);
     }
 
     createGameOverText(): void {
         this.gameOverText = this.add.text(GAME_WIDTH / 2, GAME_HEIGHT / 2, 'GAME OVER', {
-            fontFamily: 'Arial',
-            fontSize: '35px',
+            fontFamily: 'Arial Black',
+            fontSize: 53,
             color: '#ff0000',
-            align: 'center'
+            strokeThickness: 8,
+            align: 'center',
+            backgroundColor: '#990000',
+            padding: { x: GAME_WIDTH / 2, y: GAME_HEIGHT / 2 }
         });
         this.gameOverText.setOrigin(0.5);
         this.gameOverText.setScrollFactor(0);
@@ -131,11 +143,31 @@ export class EthGame extends Scene {
         this.gameOverText.setVisible(false);
     }
 
+    createGameFinishedText(): void {
+        this.gameFinishedText = this.add.text(GAME_WIDTH / 2, GAME_HEIGHT / 2, 'Congratulations!', {
+            fontFamily: 'Arial Black',
+            fontSize: 53,
+            color: '#196619',
+            strokeThickness: 8,
+            align: 'center',
+            backgroundColor: '#33cc33',
+            padding: { x: GAME_WIDTH / 2, y: GAME_HEIGHT / 2 }
+        });
+        this.gameFinishedText.setOrigin(0.5);
+        this.gameFinishedText.setScrollFactor(0);
+        this.gameFinishedText.setDepth(1000); // Ensure it's on top of other game objects
+        this.gameFinishedText.setVisible(false);
+    }
+
     async updateTimeLeft() {
-        if (this.gameOver) {
-            if (this.gameOverText) {
-                this.gameOverText.setVisible(true);
+        if (this.secondsLeft <= 0) {
+            this.physics.pause();
+            this.gameOver = true;
+            if (this.gameFinishedText) {
+                this.gameFinishedText.setVisible(true);
             }
+        }
+        if (this.gameOver) {
             if (!this.coinsSent) {
                 this.coinsSent = true;
                 await mintAfterGame(this.score);
@@ -146,11 +178,6 @@ export class EthGame extends Scene {
 
         this.secondsLeft -= 1;
         this.timeLeftText.setText(`${this.secondsLeft} Seconds left`);
-
-        if (this.secondsLeft <= 0) {
-            this.physics.pause();
-            this.gameOver = true;
-        }
     }
 
     generateCoins() {

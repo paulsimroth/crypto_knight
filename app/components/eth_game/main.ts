@@ -10,6 +10,7 @@ export const GAME_HEIGHT = 700;
 const config: Types.Core.GameConfig = {
     type: AUTO,
     title: "Crypto Knight",
+    url: "https://bruh.gamez.io",
     width: GAME_WIDTH,
     height: GAME_HEIGHT,
     pixelArt: true,
@@ -17,11 +18,6 @@ const config: Types.Core.GameConfig = {
     scale: {
         zoom: 1.1
     },
-    /*     scene: {
-            preload: gamePreload,
-            create: gameCreate,
-            update: gameUpdate
-        }, */
     scene: [
         StartScene,
         EthGame
@@ -39,7 +35,11 @@ const config: Types.Core.GameConfig = {
 };
 
 const StartGame = (parent: string) => {
-    return new Game({ ...config, parent });
+    if (typeof window !== 'undefined') {  // Ensure window is defined
+        return new Game({ ...config, parent });
+    }
+    return null;
+
 }
 
 export default StartGame;
