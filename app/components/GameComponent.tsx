@@ -13,7 +13,7 @@ function GameComponent() {
     const phaserRef = useRef<IRefPhaserGame | null>(null);
 
     return (
-        <div className="w-full h-[80vh] flex flex-col items-center justify-center">
+        <div className="w-full h-[62vh] flex flex-col items-center justify-center">
             <Suspense fallback={<GameLoader />}>
                 <div className="border-8 border-secondary rounded-md mt-[10lvh]">
                     <EthGameComponent ref={phaserRef} />

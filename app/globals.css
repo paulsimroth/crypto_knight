@@ -69,6 +69,24 @@
     }
 }
 
+::-webkit-scrollbar {
+    width: 0.5rem;
+    position: fixed;
+}
+
+::-webkit-scrollbar-track {
+    background: #dee4ed;
+}
+
+::-webkit-scrollbar-thumb {
+    background: #fff;
+    border-radius: 100vw;
+}
+
+::-webkit-scrollbar:horizontal {
+    display: none;
+}
+
 .spritePosition {
     margin: 10px 0 0 10px;
     font-size: 0.8em;
