@@ -1,13 +1,13 @@
 import { http, createConfig } from 'wagmi';
 import { mainnet, polygon, arbitrum } from 'wagmi/chains';
-import { injected, metaMask, safe, walletConnect } from 'wagmi/connectors';
+import { injected, metaMask } from 'wagmi/connectors';
 
 export const wagmiConfig = createConfig({
     chains: [mainnet, polygon, arbitrum],
+    ssr: true,
     connectors: [
         injected(),
         metaMask(),
-        safe(),
     ],
     transports: {
         [mainnet.id]: http(`https://mainnet.infura.io/v3/b82bb95def8142c98825fb3f66629dc0`),

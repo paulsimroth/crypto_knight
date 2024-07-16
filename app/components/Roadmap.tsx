@@ -1,0 +1,126 @@
+import {
+    Dialog,
+    DialogClose,
+    DialogContent,
+    DialogDescription,
+    DialogFooter,
+    DialogHeader,
+    DialogTitle,
+    DialogTrigger,
+} from "@/components/ui/dialog";
+import { Button } from "./ui/button";
+import Link from "next/link";
+import { Github } from "lucide-react";
+
+const roadmapData = [
+    {
+        title: 'Project Kickoff',
+        description: 'Initial development and MVP',
+        date: 'Q2 2024',
+    },
+    {
+        title: 'Release V1',
+        description: 'First playable version with core web3 mechanics',
+        date: 'Q3 2024',
+    },
+    {
+        title: 'Open Source Development',
+        description: 'If the Github repo is already public, feel free to participate with your ideas in this little project!',
+        date: 'Q3 2024',
+    }
+];
+
+function Roadmap() {
+    return (
+        <div className="m-5 max-w-xl">
+            <h2 className="text-2xl font-bold">Roadmap</h2>
+            <p>
+                Find out what feature will come next.
+                Feel free to visit the Github repo and suggest your own ideas!
+            </p>
+            <Dialog>
+                <DialogTrigger className="my-8">
+                    <Button>Details</Button>
+                </DialogTrigger>
+                <DialogContent>
+                    <DialogHeader>
+                        <DialogTitle>Roadmap</DialogTitle>
+                        <DialogDescription className="flex items-center justify-center">
+                            <p>
+                                Find out what feature will come next.
+                                Feel free to visit the Github repo and suggest your own ideas!
+                            </p>
+                            <Link href="https://github.com/paulsimroth/eth_game" target="_blank" aria-label='GitHub'>
+                                <Github className='py-2 w-[44px] h-[44px] object-contain cursor-pointer hover:scale-150 duration-300 transition-transform mx-4' />
+                            </Link>
+                        </DialogDescription>
+                    </DialogHeader>
+                    <div className="">
+                        <RoadmapList items={roadmapData} />
+                    </div>
+                    <DialogFooter className="sm:justify-start">
+                        <DialogClose asChild>
+                            <Button type="button" variant="secondary">
+                                Close
+                            </Button>
+                        </DialogClose>
+                    </DialogFooter>
+                </DialogContent>
+            </Dialog>
+        </div>
+    )
+};
+
+export default Roadmap;
+
+interface RoadmapData {
+    title: string;
+    description: string;
+    date: string;
+}
+
+interface RoadmapProps {
+    items: RoadmapData[];
+}
+
+function RoadmapList({ items }: RoadmapProps) {
+    return (
+        <div className="p-4 max-h-[80vh] overflow-y-auto">
+            {items.map((item, index) => (
+                <RoadmapItem
+                    key={index}
+                    title={item.title}
+                    description={item.description}
+                    date={item.date}
+                    isLast={index === items.length - 1}
+                />
+            ))}
+        </div>
+    );
+};
+
+
+interface RoadmapItemProps {
+    title: string;
+    description: string;
+    date: string;
+    isLast?: boolean;
+}
+
+function RoadmapItem({ title, description, date, isLast = false }: RoadmapItemProps) {
+    return (
+        <div className="flex items-center mb-8">
+            <div className="flex flex-col items-center mr-4">
+                <div className="w-4 h-4 bg-blue-500 rounded-full" />
+                {!isLast && <div className="w-0.5 h-full bg-blue-300 mt-1" />}
+            </div>
+            <div className="flex-1 h-fit border-b border-secondary">
+                <div className="flex items-center justify-start gap-8">
+                    <h3 className="text-lg font-semibold mb-1">{title}</h3>
+                    <span className="text-xs text-gray-400">{date}</span>
+                </div>
+                <p className="text-sm text-gray-600 mb-1">{description}</p>
+            </div>
+        </div>
+    );
+};

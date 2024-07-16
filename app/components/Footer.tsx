@@ -7,7 +7,7 @@ function Footer() {
             <Link href="https://github.com/paulsimroth" target="_blank" aria-label='GitHub'>
                 <Github className='py-2 w-[44px] h-[44px] object-contain cursor-pointer hover:scale-150 duration-300 transition-transform mx-4' />
             </Link>
-            <p>
+            <p className="text-center w-fit">
                 built by <Link href={"https://www.paulsimroth.at/"} className="underline" target="_blank">Paul Simroth</Link>
             </p>
             <div>

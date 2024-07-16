@@ -5,7 +5,7 @@ import { Metadata } from "next";
 import Footer from "./components/Footer";
 
 export const metadata: Metadata = {
-    title: "Crypto Knight",
+    title: "Crypto Knight | A Web3 Game",
     description: "Start your adventure and collect coins.",
     authors: [{ name: `Paul Simroth`, url: `https://www.paulsimroth.at/` }],
     creator: `Paul Simroth`,
