@@ -2,6 +2,7 @@
 pragma solidity ^0.8.26;
 
 import "@openzeppelin/contracts/token/ERC1155/IERC1155.sol";
+import "@openzeppelin/contracts/token/ERC20/IERC20.sol";
 import {GameCoin} from "./GameToken.sol";
 
 contract Marketplace {
@@ -44,12 +45,12 @@ contract Marketplace {
         _token.safeTransferFrom(address(this), msg.sender, tokenId, 1, "");
     }
 
-    function buyTokens10K() public payable {
+    function buyTokens10K(uint256 coinAmount) public payable {
         require(msg.value >= 0.0001 ether, "Insufficient message value");
         _coin.mint(msg.sender, 10000);
     }
 
-    function buyTokens100K() public payable {
+    function buyTokens100K(uint256 coinAmount) public payable {
         require(msg.value >= 0.001 ether, "Insufficient message value");
         _coin.mint(msg.sender, 100000);
     }
