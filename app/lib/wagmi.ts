@@ -16,12 +16,6 @@ export const wagmiConfig = createConfig({
     },
 });
 
-declare module 'wagmi' {
-    interface Register {
-        wagmiConfig: typeof wagmiConfig
-    }
-}
-
 
 /**
  * Converts a gas price from wei (bigint) to gwei (number).

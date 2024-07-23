@@ -8,6 +8,13 @@ import {
     DialogTitle,
     DialogTrigger,
 } from "@/components/ui/dialog";
+import {
+    Card,
+    CardContent,
+    CardDescription,
+    CardHeader,
+    CardTitle,
+} from "@/components/ui/card";
 import { Button } from "./ui/button";
 import Link from "next/link";
 import { Github } from "lucide-react";
@@ -32,42 +39,48 @@ const roadmapData = [
 
 function Roadmap() {
     return (
-        <div className="m-5 max-w-xl">
-            <h2 className="text-2xl font-bold">Roadmap</h2>
-            <p>
-                Find out what feature will come next.
-                Feel free to visit the Github repo and suggest your own ideas!
-            </p>
-            <Dialog>
-                <DialogTrigger className="my-8">
-                    <Button>Details</Button>
-                </DialogTrigger>
-                <DialogContent>
-                    <DialogHeader>
-                        <DialogTitle>Roadmap</DialogTitle>
-                        <DialogDescription className="flex items-center justify-center">
-                            <p>
-                                Find out what feature will come next.
-                                Feel free to visit the Github repo and suggest your own ideas!
-                            </p>
-                            <Link href="https://github.com/paulsimroth/eth_game" target="_blank" aria-label='GitHub'>
-                                <Github className='py-2 w-[44px] h-[44px] object-contain cursor-pointer hover:scale-150 duration-300 transition-transform mx-4' />
-                            </Link>
-                        </DialogDescription>
-                    </DialogHeader>
-                    <div className="">
-                        <RoadmapList items={roadmapData} />
-                    </div>
-                    <DialogFooter className="sm:justify-start">
-                        <DialogClose asChild>
-                            <Button type="button" variant="secondary">
-                                Close
-                            </Button>
-                        </DialogClose>
-                    </DialogFooter>
-                </DialogContent>
-            </Dialog>
-        </div>
+        <Card className="m-5 max-w-xl max-h-56">
+            <CardHeader>
+                <CardTitle className="text-2xl font-bold">
+                    Roadmap
+                </CardTitle>
+                <CardDescription>
+                    Find out what feature will come next.
+                    Feel free to visit the Github repo and suggest your own ideas!
+                </CardDescription>
+            </CardHeader>
+            <CardContent>
+                <Dialog>
+                    <DialogTrigger className="bg-primary text-primary-foreground hover:bg-primary/90 h-10 px-4 py-2 rounded-md">
+                        Details
+                    </DialogTrigger>
+                    <DialogContent>
+                        <DialogHeader>
+                            <DialogTitle>Roadmap</DialogTitle>
+                            <DialogDescription className="flex items-center justify-center">
+                                <p>
+                                    Find out what feature will come next.
+                                    Feel free to visit the Github repo and suggest your own ideas!
+                                </p>
+                                <Link href="https://github.com/paulsimroth/eth_game" target="_blank" aria-label='GitHub'>
+                                    <Github className='py-2 w-[44px] h-[44px] object-contain cursor-pointer hover:scale-150 duration-300 transition-transform mx-4' />
+                                </Link>
+                            </DialogDescription>
+                        </DialogHeader>
+                        <div className="">
+                            <RoadmapList items={roadmapData} />
+                        </div>
+                        <DialogFooter className="sm:justify-start">
+                            <DialogClose asChild>
+                                <Button type="button" variant="secondary">
+                                    Close
+                                </Button>
+                            </DialogClose>
+                        </DialogFooter>
+                    </DialogContent>
+                </Dialog>
+            </CardContent>
+        </Card>
     )
 };
 

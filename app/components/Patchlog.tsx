@@ -8,64 +8,67 @@ import {
     DialogTitle,
     DialogTrigger,
 } from "@/components/ui/dialog";
+import {
+    Card,
+    CardContent,
+    CardDescription,
+    CardHeader,
+    CardTitle,
+} from "@/components/ui/card";
 import { Button } from "./ui/button";
 import Link from "next/link";
 import { Github } from "lucide-react";
 
 const patchlogData = [
     {
-        title: 'Release V1',
-        description: 'First playable version with core web3 mechanics',
-        date: new Date("2024-07-15"),
-    },
-    {
-        title: 'Open Source Development',
-        description: 'If the Github repo is already public, feel free to participate with your ideas in this little project!',
-        date: new Date("2024-07-15"),
-    },
-    {
-        title: 'Gameplay V1',
-        description: 'Initial Gameplay',
-        date: new Date("2024-07-15"),
-    },
+        title: 'Implementation Basic Gameplay',
+        description: 'Gameplay available. This update is the first version. Still without the core Web3 functionality',
+        date: new Date("2024-08-01"),
+    }
 ];
 
 function Patchlog() {
     return (
-        <div className="m-5 max-w-xl">
-            <h2 className="text-2xl font-bold">Patchlog</h2>
-            <p>
-                Here you will find a list of all changes which happened to the gameplay or the smart contract archtitecture.
-            </p>
-            <Dialog>
-                <DialogTrigger className="my-8">
-                    <Button>Details</Button>
-                </DialogTrigger>
-                <DialogContent>
-                    <DialogHeader>
-                        <DialogTitle>Are you absolutely sure?</DialogTitle>
-                        <DialogDescription className="flex items-center justify-center">
-                            <p>
-                                Here you will find a list of all changes which happened to the gameplay or the smart contract archtitecture.
-                            </p>
-                            <Link href="https://github.com/paulsimroth/eth_game" target="_blank" aria-label='GitHub'>
-                                <Github className='py-2 w-[44px] h-[44px] object-contain cursor-pointer hover:scale-150 duration-300 transition-transform mx-4' />
-                            </Link>
-                        </DialogDescription>
-                    </DialogHeader>
-                    <div>
-                        <PatchlogList items={patchlogData} />
-                    </div>
-                    <DialogFooter className="sm:justify-start">
-                        <DialogClose asChild>
-                            <Button type="button" variant="secondary">
-                                Close
-                            </Button>
-                        </DialogClose>
-                    </DialogFooter>
-                </DialogContent>
-            </Dialog>
-        </div>
+        <Card className="m-5 max-w-xl max-h-56">
+            <CardHeader>
+                <CardTitle className="text-2xl font-bold">
+                    Patchlog
+                </CardTitle>
+                <CardDescription>
+                    Here you will find a list of all changes which happened to the gameplay or the smart contract archtitecture.
+                </CardDescription>
+            </CardHeader>
+            <CardContent>
+                <Dialog>
+                    <DialogTrigger className="bg-primary text-primary-foreground hover:bg-primary/90 h-10 px-4 py-2 rounded-md">
+                        Details
+                    </DialogTrigger>
+                    <DialogContent>
+                        <DialogHeader>
+                            <DialogTitle>Are you absolutely sure?</DialogTitle>
+                            <DialogDescription className="flex items-center justify-center">
+                                <p>
+                                    Here you will find a list of all changes which happened to the gameplay or the smart contract archtitecture.
+                                </p>
+                                <Link href="https://github.com/paulsimroth/eth_game" target="_blank" aria-label='GitHub'>
+                                    <Github className='py-2 w-[44px] h-[44px] object-contain cursor-pointer hover:scale-150 duration-300 transition-transform mx-4' />
+                                </Link>
+                            </DialogDescription>
+                        </DialogHeader>
+                        <div>
+                            <PatchlogList items={patchlogData} />
+                        </div>
+                        <DialogFooter className="sm:justify-start">
+                            <DialogClose asChild>
+                                <Button type="button" variant="secondary">
+                                    Close
+                                </Button>
+                            </DialogClose>
+                        </DialogFooter>
+                    </DialogContent>
+                </Dialog>
+            </CardContent>
+        </Card>
     )
 };
 
