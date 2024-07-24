@@ -3,6 +3,7 @@ import Navbar from "./components/Navbar";
 import WagmiClientWrapper from "./components/WagmiClientWrapper";
 import { Metadata } from "next";
 import Footer from "./components/Footer";
+import { ThemeProvider } from "./components/ui/theme-provider";
 
 export const metadata: Metadata = {
     title: "Crypto Knight | A Web3 Game",
@@ -24,11 +25,18 @@ export default function RootLayout({
         <html lang='en'>
             <WagmiClientWrapper>
                 <body className='h-[100vh]'>
-                    <Navbar />
-                    <main className='flex flex-col items-center justify-center bg-background h-full'>
-                        {children}
-                    </main>
-                    <Footer />
+                    <ThemeProvider
+                        attribute="class"
+                        defaultTheme="system"
+                        enableSystem
+                        disableTransitionOnChange
+                    >
+                        <Navbar />
+                        <main className='flex flex-col items-center justify-center bg-background h-full'>
+                            {children}
+                        </main>
+                        <Footer />
+                    </ThemeProvider>
                 </body>
             </WagmiClientWrapper>
         </html>

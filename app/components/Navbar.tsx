@@ -1,4 +1,5 @@
 import Connector from "./Connector";
+import { ThemeToggle } from "./ThemeToggle";
 
 function Navbar() {
 
@@ -7,7 +8,10 @@ function Navbar() {
             <h1 className="text-3xl font-bold">
                 Crypto Knight
             </h1>
-            <Connector />
+            <div className="w-fit flex itmes-center justfiy-center gap-5">
+                <ThemeToggle />
+                <Connector />
+            </div>
         </div>
     )
 };
