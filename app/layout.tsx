@@ -32,7 +32,7 @@ export default function RootLayout({
                         disableTransitionOnChange
                     >
                         <Navbar />
-                        <main className='flex flex-col items-center justify-center bg-background h-full'>
+                        <main className='flex flex-col items-center justify-center bg-background h-fit'>
                             {children}
                         </main>
                         <Footer />

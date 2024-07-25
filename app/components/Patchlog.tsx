@@ -23,13 +23,13 @@ const patchlogData = [
     {
         title: 'Implementation Basic Gameplay',
         description: 'Gameplay available. This update is the first version. Still without the core Web3 functionality',
-        date: new Date("2024-08-01"),
+        date: new Date("2024-07-01"),
     }
 ];
 
 function Patchlog() {
     return (
-        <Card className="m-5 max-w-xl max-h-56">
+        <Card className="m-5 max-w-xl h-fit">
             <CardHeader>
                 <CardTitle className="text-2xl font-bold">
                     Patchlog
@@ -50,7 +50,7 @@ function Patchlog() {
                                 <p>
                                     Here you will find a list of all changes which happened to the gameplay or the smart contract archtitecture.
                                 </p>
-                                <Link href="https://github.com/paulsimroth/eth_game" target="_blank" aria-label='GitHub'>
+                                <Link href="https://github.com/paulsimroth/crypto_knight" target="_blank" aria-label='GitHub'>
                                     <Github className='py-2 w-[44px] h-[44px] object-contain cursor-pointer hover:scale-150 duration-300 transition-transform mx-4' />
                                 </Link>
                             </DialogDescription>

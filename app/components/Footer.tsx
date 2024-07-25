@@ -4,13 +4,13 @@ import Link from "next/link";
 function Footer() {
     return (
         <div className="w-full h-28 sticky bottom-0 flex items-center justify-between bg-secondary px-10">
-            <Link href="https://github.com/paulsimroth" target="_blank" aria-label='GitHub'>
+            <Link href="https://github.com/paulsimroth/crypto_knight" target="_blank" aria-label='GitHub'>
                 <Github className='py-2 w-[44px] h-[44px] object-contain cursor-pointer hover:scale-150 duration-300 transition-transform mx-4' />
             </Link>
             <p className="text-center w-fit">
                 built by <Link href={"https://www.paulsimroth.at/"} className="underline" target="_blank">Paul Simroth</Link>
             </p>
-            <div>
+            <div className="flex flex-col md:flex-row items-start w-fit max-w-1/3">
                 <Link href={"https://www.paulsimroth.at/imprint"} className="underline m-2" target="_blank">
                     Imprint
                 </Link>

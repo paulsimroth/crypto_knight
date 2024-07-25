@@ -30,7 +30,8 @@ const config: Types.Core.GameConfig = {
     },
     autoFocus: false,
     input: {
-        keyboard: true
+        keyboard: true,
+        touch: true
     }
 };
 

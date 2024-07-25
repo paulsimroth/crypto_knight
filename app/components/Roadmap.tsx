@@ -23,23 +23,23 @@ const roadmapData = [
     {
         title: 'Project Kickoff',
         description: 'Initial development and MVP',
-        date: 'Q2 2024',
+        date: new Date("2024-08-01"),
     },
     {
         title: 'Release V1',
         description: 'First playable version with core web3 mechanics',
-        date: 'Q3 2024',
+        date: new Date("2024-08-01"),
     },
     {
         title: 'Open Source Development',
         description: 'If the Github repo is already public, feel free to participate with your ideas in this little project!',
-        date: 'Q3 2024',
+        date: new Date("2024-08-01"),
     }
 ];
 
 function Roadmap() {
     return (
-        <Card className="m-5 max-w-xl max-h-56">
+        <Card className="m-5 max-w-xl h-fit">
             <CardHeader>
                 <CardTitle className="text-2xl font-bold">
                     Roadmap
@@ -62,7 +62,7 @@ function Roadmap() {
                                     Find out what feature will come next.
                                     Feel free to visit the Github repo and suggest your own ideas!
                                 </p>
-                                <Link href="https://github.com/paulsimroth/eth_game" target="_blank" aria-label='GitHub'>
+                                <Link href="https://github.com/paulsimroth/crypto_knight" target="_blank" aria-label='GitHub'>
                                     <Github className='py-2 w-[44px] h-[44px] object-contain cursor-pointer hover:scale-150 duration-300 transition-transform mx-4' />
                                 </Link>
                             </DialogDescription>
@@ -89,7 +89,7 @@ export default Roadmap;
 interface RoadmapData {
     title: string;
     description: string;
-    date: string;
+    date: Date;
 }
 
 interface RoadmapProps {
@@ -116,7 +116,7 @@ function RoadmapList({ items }: RoadmapProps) {
 interface RoadmapItemProps {
     title: string;
     description: string;
-    date: string;
+    date: Date;
     isLast?: boolean;
 }
 
@@ -130,7 +130,12 @@ function RoadmapItem({ title, description, date, isLast = false }: RoadmapItemPr
             <div className="flex-1 h-fit border-b border-secondary">
                 <div className="flex items-center justify-start gap-8">
                     <h3 className="text-lg font-semibold mb-1">{title}</h3>
-                    <span className="text-xs text-gray-400">{date}</span>
+                    <span className="text-xs text-gray-400">
+                        {new Date(date).toLocaleDateString("en", {
+                            month: "long",
+                            year: "numeric",
+                        })}
+                    </span>
                 </div>
                 <p className="text-sm text-gray-600 mb-1">{description}</p>
             </div>
