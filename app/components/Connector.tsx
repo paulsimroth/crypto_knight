@@ -1,5 +1,4 @@
 'use client';
-import { formatEthAddress } from "@/lib/wagmi";
 import { Button } from "./ui/button";
 import { useAccount, useConnect, useDisconnect, useEnsName } from "wagmi";
 import { injected, metaMask } from "wagmi/connectors";
@@ -13,6 +12,7 @@ import {
 } from "@/components/ui/dropdown-menu";
 import Image from "next/image";
 import { Ban, Wallet } from "lucide-react";
+import { formatEthAddress } from "@/lib/web3Helpers";
 
 function Connector() {
 
