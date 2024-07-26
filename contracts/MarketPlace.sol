@@ -1,71 +1,87 @@
 // SPDX-License-Identifier: MIT
 pragma solidity ^0.8.26;
 
-import "@openzeppelin/contracts/token/ERC1155/IERC1155.sol";
-import {GameCoin} from "./GameToken.sol";
+import "@openzeppelin/contracts/access/Ownable.sol";
+import "./GameToken.sol";
+import "./SpecialItem.sol";
 
-contract Marketplace {
-    IERC1155 private _token;
+contract Marketplace is Ownable {
     GameCoin private _coin;
-    address private _owner;
+    GameItems private _items;
 
-    mapping(uint256 => uint256) price;
+    mapping(uint256 => uint256) public itemPrices;
+    mapping(uint256 => uint256) public maxItemsPerUser;
 
-    constructor(IERC1155 tokenAddress, GameCoin coinAddress) {
-        require(address(tokenAddress) != address(0));
-        require(address(coinAddress) != address(0));
+    mapping(address => mapping(uint256 => uint256)) public userItemCount;
 
-        _token = tokenAddress;
+    event ItemPurchased(address buyer, uint256 itemId, uint256 amount);
+    event ItemUpgraded(address indexed user, uint256 oldItemId, uint256 newItemId);
+    event TokensPurchased(address buyer, uint256 amount);
+
+    constructor(GameCoin coinAddress, GameItems itemsAddress) Ownable(msg.sender) {
+        require(address(coinAddress) != address(0), "Invalid coin address");
+        require(address(itemsAddress) != address(0), "Invalid items address");
         _coin = coinAddress;
-        _owner = msg.sender;
-
-        price[1] = 10;
-        price[2] = 20;
-        price[3] = 30;
+        _items = itemsAddress;
+        
+        // Set default prices and max items per user
+        for (uint256 i = 0; i < 18; i++) {
+            itemPrices[i] = 10 * (10 ** (i % 6)); // Example: 10, 100, 1000, 10000, 100000, 1000000
+            maxItemsPerUser[i] = 10 / (2 ** (i % 6)); // Example: 10, 5, 2, 1, 1, 1
+        }
     }
 
-    receive() external payable {
-        (bool success, ) = _owner.call{value: address(this).balance}("");
-        require(success, "Transfer failed.");
+    function buyItem(uint256 itemId, uint256 amount) public {
+        require(userItemCount[msg.sender][itemId] + amount <= maxItemsPerUser[itemId], "Exceeds max items per user");
+        uint256 totalPrice = itemPrices[itemId] * amount;
+        require(_coin.balanceOf(msg.sender) >= totalPrice, "Insufficient balance");
+
+        _coin.transferFrom(msg.sender, address(this), totalPrice);
+        _items.mint(msg.sender, itemId, amount);
+
+        userItemCount[msg.sender][itemId] += amount;
+        emit ItemPurchased(msg.sender, itemId, amount);
     }
 
-    fallback() external payable {}
+    function upgradeItem(uint256 itemId) public {
+        require(itemId % 6 < 5, "Cannot upgrade Legendary items");
+        require(_items.getItemBalance(msg.sender, itemId) >= 2, "Not enough items to upgrade");
 
-    function balanceOf(address account) public view returns (uint256) {
-        require(account != address(0));
-        return _coin.balanceOf(account);
+        uint256 newItemId = itemId + 1;
+
+        // Burn two items of the current rarity
+        _items.burn(msg.sender, itemId, 2);
+
+        // Mint one item of the next rarity
+        _items.mint(msg.sender, newItemId, 1);
+
+        // Update user item counts
+        userItemCount[msg.sender][itemId] -= 2;
+        userItemCount[msg.sender][newItemId] += 1;
+
+        emit ItemUpgraded(msg.sender, itemId, newItemId);
     }
 
-    function buySpecialItem(uint256 tokenId, uint256 buyOffer) public payable {
-        //Check for correct amount and correct tokenId
-        require(buyOffer >= price[tokenId] && price[tokenId] != 0);
-        require(balanceOf(msg.sender) >= price[tokenId]);
-        _coin.transferFrom(msg.sender, address(this), buyOffer);
-        _token.safeTransferFrom(address(this), msg.sender, tokenId, 1, "");
+    function buyTokens(uint256 amount) public payable {
+        require(msg.value >= amount * 0.00001 ether, "Insufficient payment");
+        _coin.mintFromMarketplace(msg.sender, amount);
+        emit TokensPurchased(msg.sender, amount);
     }
 
-    function buyTokens10K() public payable {
-        require(msg.value >= 0.0001 ether, "Insufficient message value");
-        _coin.mint(msg.sender, 10000);
+    function setItemPrice(uint256 itemId, uint256 newPrice) public onlyOwner {
+        itemPrices[itemId] = newPrice;
     }
 
-    function buyTokens100K() public payable {
-        require(msg.value >= 0.001 ether, "Insufficient message value");
-        _coin.mint(msg.sender, 100000);
+    function setMaxItemsPerUser(uint256 itemId, uint256 newMax) public onlyOwner {
+        maxItemsPerUser[itemId] = newMax;
     }
 
-    function onERC1155Received(
-        address _operator,
-        address _from,
-        uint256 _id,
-        uint256 _value,
-        bytes calldata _data
-    ) external pure returns (bytes4) {
-        return
-            bytes4(
-                keccak256(
-                    "onERC1155Received(address,address,uint256,uint256,bytes)"
-                )
-            );
+    function withdrawTokens(address to, uint256 amount) public onlyOwner {
+        _coin.transfer(to, amount);
+    }
+
+    function withdrawEth(address payable to, uint256 amount) public onlyOwner {
+        require(address(this).balance >= amount, "Insufficient balance");
+        to.transfer(amount);
     }
 }
