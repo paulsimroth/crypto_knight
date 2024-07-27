@@ -26,8 +26,8 @@ contract Marketplace is Ownable {
         
         // Set default prices and max items per user
         for (uint256 i = 0; i < 18; i++) {
-            itemPrices[i] = 10 * (10 ** (i % 6)); // Example: 10, 100, 1000, 10000, 100000, 1000000
-            maxItemsPerUser[i] = 10 / (2 ** (i % 6)); // Example: 10, 5, 2, 1, 1, 1
+            itemPrices[i] = 10 * (10 ** (i % 6));
+            maxItemsPerUser[i] = 10 / (2 ** (i % 6));
         }
     }
 
@@ -44,7 +44,7 @@ contract Marketplace is Ownable {
     }
 
     function upgradeItem(uint256 itemId) public {
-        require(itemId % 6 < 5, "Cannot upgrade Legendary items");
+        require(itemId % 6 < 5, "Cannot upgrade item status");
         require(_items.getItemBalance(msg.sender, itemId) >= 2, "Not enough items to upgrade");
 
         uint256 newItemId = itemId + 1;

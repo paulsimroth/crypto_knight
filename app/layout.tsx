@@ -4,6 +4,8 @@ import WagmiClientWrapper from "./components/WagmiClientWrapper";
 import { Metadata } from "next";
 import Footer from "./components/Footer";
 import { ThemeProvider } from "./components/ui/theme-provider";
+import GoogleAnalytics from "./components/GoogleAnalytics";
+import CookieBanner from "./components/CookieBanner";
 
 export const metadata: Metadata = {
     title: "Crypto Knight | A Web3 Game",
@@ -36,7 +38,9 @@ export default function RootLayout({
                             {children}
                         </main>
                         <Footer />
+                        <CookieBanner />
                     </ThemeProvider>
+                    <GoogleAnalytics gaId={process!.env!.NEXT_PUBLIC_GA_ID!} />
                 </body>
             </WagmiClientWrapper>
         </html>
