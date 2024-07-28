@@ -13,6 +13,7 @@ import {
 import Image from "next/image";
 import { Ban, Wallet } from "lucide-react";
 import { formatEthAddress } from "@/lib/web3Helpers";
+import { event } from "@/lib/gtag";
 
 function Connector() {
 
@@ -38,7 +39,7 @@ function Connector() {
                     <DropdownMenuLabel>Options</DropdownMenuLabel>
                     <DropdownMenuSeparator />
                     <DropdownMenuItem>
-                        <Button onClick={() => disconnect()} variant={"ghost"} className="flex items-center justify-start w-full gap-3">
+                        <Button onClick={() => (disconnect(), event('connect_wallet', 'type', 'disconnect'))} variant={"ghost"} className="flex items-center justify-start w-full gap-3">
                             <Ban className="text-destructive" />
                             <span>Disconnect</span>
                         </Button>
@@ -49,9 +50,9 @@ function Connector() {
                     <DropdownMenuLabel>Connect your Wallet</DropdownMenuLabel>
                     <DropdownMenuSeparator />
                     <DropdownMenuItem>
-                        <Button onClick={() => connect({
+                        <Button onClick={() => (connect({
                             connector: metaMask()
-                        })} variant={"ghost"} className="flex items-center justify-start w-full gap-3">
+                        }), event('connect_wallet', 'type', 'metamask'))} variant={"ghost"} className="flex items-center justify-start w-full gap-3">
                             <Image
                                 src="/metamask_logo.svg"
                                 alt="MetaMask"
@@ -62,9 +63,9 @@ function Connector() {
                         </Button>
                     </DropdownMenuItem>
                     <DropdownMenuItem>
-                        <Button onClick={() => connect({
+                        <Button onClick={() => (connect({
                             connector: injected()
-                        })} variant={"ghost"} className="flex items-center justify-start w-full gap-3">
+                        }), event('connect_wallet', 'type', 'injected'))} variant={"ghost"} className="flex items-center justify-start w-full gap-3">
                             <Wallet />
                             <span>Other</span>
                         </Button>

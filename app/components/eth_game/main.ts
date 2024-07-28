@@ -10,13 +10,13 @@ export const GAME_HEIGHT = 700;
 const config: Types.Core.GameConfig = {
     type: AUTO,
     title: "Crypto Knight",
-    url: "https://bruh.gamez.io",
+    url: `${process.env.NEXT_PUBLIC_SITE_URL}/`,
     width: GAME_WIDTH,
     height: GAME_HEIGHT,
     pixelArt: true,
     parent: 'game-container',
     scale: {
-        zoom: 1.1
+        zoom: 1
     },
     scene: [
         StartScene,
@@ -28,7 +28,7 @@ const config: Types.Core.GameConfig = {
             gravity: { x: 0, y: 720 }
         }
     },
-    autoFocus: false,
+    autoFocus: true,
     input: {
         keyboard: true,
         touch: true

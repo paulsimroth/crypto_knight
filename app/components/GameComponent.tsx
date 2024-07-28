@@ -14,14 +14,14 @@ function GameComponent() {
 
     return (
         <>
-            <div className="w-full h-[62vh] min-h-[1000px] hidden md:flex flex-col items-center justify-center">
+            <div className="w-full h-[62vh] min-h-[1000px] hidden lg:flex flex-col items-center justify-center">
                 <Suspense fallback={<GameLoader />}>
                     <div className="border-8 border-secondary rounded-md xl:mt-[10lvh] mt-[11vh]">
                         <EthGameComponent ref={phaserRef} />
                     </div>
                 </Suspense>
             </div>
-            <div className="w-[80%] max-w-[1000px] h-fit min-h-[300px] md:hidden flex flex-col items-center justify-center text-justify">
+            <div className="w-[80%] max-w-[1000px] h-fit min-h-[300px] lg:hidden flex flex-col items-center justify-center text-justify">
                 <h2 className="text-left w-full text-2xl font-bold my-2">
                     Thank you for visiting Crypto Knights!
                 </h2>

@@ -102,8 +102,9 @@ export class EthGame extends Scene {
         this.physics.add.collider(this.crates, this.knight);
 
         // Score and Time Text
-        this.scoreText = this.add.text(6, 16, "Bitcoin Bag: 0", { fontSize: "32px", color: "#000000" });
+        this.scoreText = this.add.text(6, 16, "Coin Bag: 0", { fontSize: "32px", color: "#000000" });
         this.createGameOverText();
+        this.createGameFinishedText();
         this.timeLeftText = this.add.text(6, 56, `${this.secondsLeft} Seconds left`, { fontSize: "30px", color: "#000000" });
 
         // Keyboard inputs
@@ -114,7 +115,7 @@ export class EthGame extends Scene {
             delay: COIN_GENERATION_INTERVAL,
             callback: this.generateCoins,
             callbackScope: this,
-            repeat: -1
+            loop: true
         });
         this.timeLeftTimer = this.time.addEvent({
             delay: GAME_SECONDS,
@@ -185,7 +186,7 @@ export class EthGame extends Scene {
             key: "bitcoin",
             repeat: 1,
             setXY: {
-                x: Phaser.Math.Between(0, 900),
+                x: Phaser.Math.Between(0, GAME_WIDTH),
                 y: -50,
                 stepX: Phaser.Math.Between(30, 100)
             }
@@ -205,7 +206,7 @@ export class EthGame extends Scene {
     collectCoin(knight: Phaser.Physics.Arcade.Sprite, coin: Phaser.Physics.Arcade.Sprite) {
         coin.disableBody(true, true);
         this.score++;
-        this.scoreText.setText("Bitcoin Bag: " + this.score);
+        this.scoreText.setText("Coin Bag: " + this.score);
     }
 
     checkKnightPosition(knight: Knight): void {

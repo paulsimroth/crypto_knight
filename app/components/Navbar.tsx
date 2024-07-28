@@ -1,4 +1,5 @@
 import Connector from "./Connector";
+import NetworkSwitch from "./NetworkSwitch";
 import { ThemeToggle } from "./ThemeToggle";
 
 function Navbar() {
@@ -10,6 +11,7 @@ function Navbar() {
             </h1>
             <div className="w-fit max-w-1/3 flex flex-col md:flex-row items-end md:items-center justfiy-center gap-5">
                 <ThemeToggle />
+                <NetworkSwitch />
                 <Connector />
             </div>
         </div>

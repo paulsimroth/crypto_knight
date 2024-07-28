@@ -22,12 +22,12 @@ import { Github } from "lucide-react";
 const roadmapData = [
     {
         title: 'Project Kickoff',
-        description: 'Initial development and MVP',
-        date: new Date("2024-08-01"),
+        description: 'Initial development and MVP, deployment of Token and Marketplace contract',
+        date: new Date("2024-07-01"),
     },
     {
         title: 'Release V1',
-        description: 'First playable version with core web3 mechanics',
+        description: 'First playable version with core web3 mechanics, addition of special items and full marketplace functionality',
         date: new Date("2024-08-01"),
     },
     {
