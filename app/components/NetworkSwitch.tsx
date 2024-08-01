@@ -1,22 +1,26 @@
 'use client';
-import { useSwitchChain } from 'wagmi';
-import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from './ui/dropdown-menu';
+import { useAccount, useSwitchChain } from 'wagmi';
+import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuLabel, DropdownMenuSeparator, DropdownMenuTrigger } from './ui/dropdown-menu';
 import { Button } from './ui/button';
+import { getChainInfo } from '@/lib/web3Service';
 
 function NetworkSwitch() {
     const { chains, switchChain } = useSwitchChain();
+    const { chainId } = useAccount();
 
     return (
         <DropdownMenu>
             <DropdownMenuTrigger asChild>
                 <Button variant="outline">
-                    Networks
+                    {chainId ? getChainInfo(chainId).name : "Networks"}
                 </Button>
             </DropdownMenuTrigger>
             <DropdownMenuContent align="end">
+                <DropdownMenuLabel>Available Networks</DropdownMenuLabel>
+                <DropdownMenuSeparator />
                 {chains.map((chain) => (
-                    <DropdownMenuItem>
-                        <button key={chain.id} onClick={() => switchChain({ chainId: chain.id })}>
+                    <DropdownMenuItem key={chain.id}>
+                        <button onClick={() => switchChain({ chainId: chain.id })}>
                             {chain.name}
                         </button>
                     </DropdownMenuItem>
