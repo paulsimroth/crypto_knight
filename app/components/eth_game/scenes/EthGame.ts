@@ -1,7 +1,8 @@
 import { Scene } from 'phaser';
 import { EventBus } from '../EventBus';
 import { GAME_HEIGHT, GAME_WIDTH } from '@/components/eth_game/main';
-import { mintAfterGame } from '@/lib/web3Service';
+import { gameScore, mintScore } from '@/service/web3Service';
+import { weiToEther } from '@/service/web3Helpers';
 
 type Knight = Phaser.Physics.Arcade.Sprite;
 type TimerEvent = Phaser.Time.TimerEvent;
@@ -29,6 +30,9 @@ export class EthGame extends Scene {
     offScreenTimer: TimerEvent | null = null;
     gameOverText: Phaser.GameObjects.Text | null = null;
     gameFinishedText: Phaser.GameObjects.Text | null = null;
+
+    private address: `0x${string}` | undefined;
+    private chainId: number | undefined;
 
     constructor() {
         super('EthGame');
@@ -124,6 +128,14 @@ export class EthGame extends Scene {
             repeat: -1
         });
 
+        /**
+         * WEB3 Data
+         */
+        const gameData = this.game.registry.get('gameData');
+        if (gameData) {
+            this.address = gameData.address;
+            this.chainId = gameData.chainId;
+        }
 
         EventBus.emit('current-scene-ready', this);
     }
@@ -171,7 +183,9 @@ export class EthGame extends Scene {
         if (this.gameOver) {
             if (!this.coinsSent) {
                 this.coinsSent = true;
-                await mintAfterGame(this.score);
+                if (this.address && this.chainId) {
+                    await mintScore(this.score, this.address, this.chainId);
+                }
             }
             EventBus.emit('game_finished', this);
             return;

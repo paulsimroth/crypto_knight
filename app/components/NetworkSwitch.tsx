@@ -2,7 +2,7 @@
 import { useAccount, useSwitchChain } from 'wagmi';
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuLabel, DropdownMenuSeparator, DropdownMenuTrigger } from './ui/dropdown-menu';
 import { Button } from './ui/button';
-import { getChainInfo } from '@/lib/web3Service';
+import { getChainInfo } from '@/service/web3Service';
 
 function NetworkSwitch() {
     const { chains, switchChain } = useSwitchChain();

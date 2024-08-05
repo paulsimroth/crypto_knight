@@ -7,7 +7,7 @@ export const GAME_HEIGHT = 700;
 
 //  Find out more information about the Game Config at:
 //  https://newdocs.phaser.io/docs/3.70.0/Phaser.Types.Core.GameConfig
-const config: Types.Core.GameConfig = {
+export const phaserConfig: Types.Core.GameConfig = {
     type: AUTO,
     title: "Crypto Knight",
     url: `${process.env.NEXT_PUBLIC_SITE_URL}/`,
@@ -35,12 +35,16 @@ const config: Types.Core.GameConfig = {
     }
 };
 
-const StartGame = (parent: string) => {
+const StartGame = (parent: string, gameData?: { address: string, chainId: number }) => {
     if (typeof window !== 'undefined') {  // Ensure window is defined
-        return new Game({ ...config, parent });
+        const game = new Game({ ...phaserConfig, parent });
+
+        // Pass gameData to all scenes
+        game.registry.set('gameData', gameData);
+
+        return game;
     }
     return null;
-
 }
 
 export default StartGame;

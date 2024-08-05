@@ -23,7 +23,17 @@ const patchlogData = [
     {
         title: 'Implementation Basic Gameplay',
         description: 'Gameplay available. This update is the first version. Still without the core Web3 functionality',
-        date: new Date("2024-07-01"),
+        date: new Date("2024-07-28"),
+    },
+    {
+        title: 'Smart Contracts deployed to Testnet',
+        description: 'Smart Contracts deployed on Arbitrum Sepolia. Token: 0xCa7Db3644ba596205c41374162B7DD62e05b4615; NFT: 0x9FF9Ca3a8421723c22aA8F9930d7377CE8d83b21; Marketplace: 0x77d97e471e804494af0F8cFfd7e8B14C56E3f827',
+        date: new Date("2024-08-03"),
+    },
+    {
+        title: 'Web3 functions',
+        description: 'Implementation of mint on game completion released.',
+        date: new Date("2024-08-05"),
     }
 ];
 

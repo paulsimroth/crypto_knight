@@ -2,6 +2,7 @@
 import { forwardRef, useEffect, useLayoutEffect, useRef } from 'react';
 import StartGame from './main';
 import { EventBus } from './EventBus';
+import { useAccount } from 'wagmi';
 
 export interface IRefPhaserGame {
     game: Phaser.Game | null;
@@ -15,10 +16,11 @@ interface IProps {
 export const EthGameComponent = forwardRef<IRefPhaserGame, IProps>(function PhaserGame({ currentActiveScene }, ref) {
     const game = useRef<Phaser.Game | null>(null!);
     const gameContainer = useRef<HTMLDivElement>(null);
+    const { address, chainId } = useAccount();
 
     useLayoutEffect(() => {
-        if (typeof window !== 'undefined' && game.current === null) { // Ensure window is defined
-            game.current = StartGame("game-container");
+        if (typeof window !== 'undefined' && game.current === null && address && chainId) { // Ensure window is defined
+            game.current = StartGame("game-container", { address, chainId });
 
             if (typeof ref === 'function') {
                 ref({ game: game.current, scene: null });

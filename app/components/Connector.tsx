@@ -12,8 +12,8 @@ import {
 } from "@/components/ui/dropdown-menu";
 import Image from "next/image";
 import { Ban, Wallet } from "lucide-react";
-import { formatEthAddress } from "@/lib/web3Helpers";
 import { event } from "@/lib/gtag";
+import { formatEthAddress } from "@/service/web3Helpers";
 
 function Connector() {
 
