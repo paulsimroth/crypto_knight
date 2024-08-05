@@ -37,7 +37,7 @@ export const EthGameComponent = forwardRef<IRefPhaserGame, IProps>(function Phas
                 }
             }
         }
-    }, [ref]);
+    }, [ref, address, chainId]);
 
     useEffect(() => {
         EventBus.on('current-scene-ready', (scene_instance: Phaser.Scene) => {
