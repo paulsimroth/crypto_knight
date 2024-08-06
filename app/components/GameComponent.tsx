@@ -14,9 +14,9 @@ function GameComponent() {
 
     return (
         <>
-            <div className="w-full h-[62vh] min-h-[1000px] hidden lg:flex flex-col items-center justify-center">
+            <div className="w-full h-fit mt-8 hidden lg:flex flex-col items-center justify-center">
                 <Suspense fallback={<GameLoader />}>
-                    <div className="border-8 border-secondary rounded-md xl:mt-[10lvh] mt-[11vh]">
+                    <div className="border-8 border-secondary rounded-md">
                         <EthGameComponent ref={phaserRef} />
                     </div>
                 </Suspense>
@@ -41,7 +41,7 @@ export default GameComponent;
 
 function GameLoader() {
     return (
-        <div className="w-[1000px] h-[700px] bg-secondary rounded-lg p-1">
+        <div className="w-[1000px] h-[600px] bg-secondary rounded-lg p-1">
             <Image
                 src="/assets/background.png"
                 width={1000}

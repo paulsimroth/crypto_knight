@@ -3,7 +3,7 @@ import { AUTO, Game, Types } from "phaser";
 import { StartScene } from './scenes/StartScene';
 
 export const GAME_WIDTH = 1000;
-export const GAME_HEIGHT = 700;
+export const GAME_HEIGHT = 600;
 
 //  Find out more information about the Game Config at:
 //  https://newdocs.phaser.io/docs/3.70.0/Phaser.Types.Core.GameConfig

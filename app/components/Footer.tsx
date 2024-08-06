@@ -4,7 +4,7 @@ import ContactForm from "./ContactForm";
 
 function Footer() {
     return (
-        <div className="w-full h-28 sticky bottom-0 flex items-center justify-between bg-secondary px-10">
+        <div className="w-full h-28  bottom-0 flex items-center justify-between bg-secondary px-10">
             <div className="flex items-center justify-center gap-3 w-fit">
                 <Link href="https://github.com/paulsimroth/crypto_knight" target="_blank" aria-label='GitHub'>
                     <Github className='py-2 w-[44px] h-[44px] object-contain cursor-pointer hover:scale-150 duration-300 transition-transform mx-4' />

@@ -82,10 +82,9 @@ function ContactForm() {
             </DialogTrigger>
             <DialogContent>
                 <DialogHeader>
-                    <DialogTitle>Are you absolutely sure?</DialogTitle>
+                    <DialogTitle>Contact</DialogTitle>
                     <DialogDescription>
-                        This action cannot be undone. This will permanently delete your account
-                        and remove your data from our servers.
+                        Reach out with any questions and feedback you might have!
                     </DialogDescription>
                 </DialogHeader>
                 <form id="contact-form">
