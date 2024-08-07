@@ -3,6 +3,7 @@ import { TokenAbi } from "../../contracts/abis/TokenAbi";
 import { writeContract } from '@wagmi/core'
 import { wagmiConfig } from "@/lib/wagmi";
 import { weiToEther } from "./web3Helpers";
+import { useReadContract } from 'wagmi';
 
 type ChainInfo = {
     name: string;
@@ -56,10 +57,6 @@ export function getChainInfo(chainId: number): ChainInfo {
     return chainInfo;
 }
 
-export async function getInventory() {
-    console.log("GET INVENTORY")
-}
-
 export async function getMarketplaceItems() {
     console.log("GET MARKETPLACE ITEMS")
 }
@@ -74,10 +71,6 @@ export async function gameScore(score: number) {
 };
 
 export async function mintScore(score: number, address: `0x${string}`, chainId: number) {
-
-    const scoreInEther = weiToEther(score);
-    console.log(scoreInEther)
-
     try {
         const tx = await writeContract(wagmiConfig, {
             address: getChainInfo(chainId).tokenContract,
@@ -85,8 +78,6 @@ export async function mintScore(score: number, address: `0x${string}`, chainId: 
             functionName: 'mint',
             args: [address, parseEther(score.toString())],
         });
-
-        console.log("Transaction sent:", tx);
         return tx;
     } catch (error) {
         console.error("Error minting tokens:", error);

@@ -3,7 +3,10 @@ import { Suspense, useRef } from "react";
 import Image from "next/image";
 import { IRefPhaserGame } from "./eth_game/Game";
 import dynamic from "next/dynamic";
-import { useAccount } from "wagmi";
+import { useAccount, useBalance } from "wagmi";
+
+import { getChainInfo } from "@/service/web3Service";
+import { weiToEther } from "@/service/web3Helpers";
 
 const EthGameComponent = dynamic(() => import('./eth_game/Game').then((mod) => mod.EthGameComponent), {
     ssr: false,
@@ -13,6 +16,10 @@ function GameComponent() {
     //  References to the PhaserGame component (game and scene are exposed)
     const phaserRef = useRef<IRefPhaserGame | null>(null);
     const { address, chainId } = useAccount();
+    const balanceOf = useBalance({
+        address: address,
+        token: getChainInfo(chainId ? chainId : 421614).tokenContract
+    })
 
     return (
         <>
@@ -30,11 +37,16 @@ function GameComponent() {
                 <h2 className="text-left w-full text-2xl font-bold my-2">
                     Thank you for visiting Crypto Knights!
                 </h2>
-                <p>
+                <p className="w-full">
                     Please visit this page on Desktop. Currently there is no mobile version of this game available.
                 </p>
-                <p>
+                <p className="w-full">
                     You need a keyboard to play this game. Touch controls are in progress.
+                </p>
+            </div>
+            <div className="w-[80%] max-w-[1000px]">
+                <p>
+                    Your current token balance: {balanceOf ? weiToEther(balanceOf.data?.value) : 0}
                 </p>
             </div>
         </>

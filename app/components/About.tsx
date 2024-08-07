@@ -1,7 +1,7 @@
 
 function About() {
     return (
-        <div className="w-[80%] max-w-[1000px] h-fit min-h-[300px] flex flex-col items-center justify-center">
+        <div className="w-[80%] max-w-[1000px] h-fit my-3 flex flex-col items-center justify-center">
             <h2 className="text-left w-full text-2xl font-bold">
                 About
             </h2>
