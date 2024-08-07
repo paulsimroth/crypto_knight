@@ -5,7 +5,7 @@ import { ThemeToggle } from "./ThemeToggle";
 function Navbar() {
 
     return (
-        <div className="w-full min-h-20 h-fit relative xl:sticky top-0 flex items-center justify-between bg-secondary px-8 md:px-10 py-5">
+        <div className="w-full min-h-20 h-fit relative xl:sticky top-0 flex items-center justify-between bg-secondary px-8 md:px-10 py-5 z-50">
             <h1 className="text-3xl font-bold max-w-2/3">
                 Crypto Knight
             </h1>

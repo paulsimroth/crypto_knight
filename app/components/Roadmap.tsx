@@ -34,6 +34,11 @@ const roadmapData = [
         title: 'Open Source Development',
         description: 'If the Github repo is already public, feel free to participate with your ideas in this little project!',
         date: new Date("2024-08-01"),
+    },
+    {
+        title: 'Marketplace Integration',
+        description: 'After Implementing all other Web3 functionality the last step will be the integration of the Marketplace to buy, sell and merge items!',
+        date: new Date("2024-09-01"),
     }
 ];
 

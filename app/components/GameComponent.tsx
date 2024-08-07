@@ -3,6 +3,7 @@ import { Suspense, useRef } from "react";
 import Image from "next/image";
 import { IRefPhaserGame } from "./eth_game/Game";
 import dynamic from "next/dynamic";
+import { useAccount } from "wagmi";
 
 const EthGameComponent = dynamic(() => import('./eth_game/Game').then((mod) => mod.EthGameComponent), {
     ssr: false,
@@ -11,15 +12,19 @@ const EthGameComponent = dynamic(() => import('./eth_game/Game').then((mod) => m
 function GameComponent() {
     //  References to the PhaserGame component (game and scene are exposed)
     const phaserRef = useRef<IRefPhaserGame | null>(null);
+    const { address, chainId } = useAccount();
 
     return (
         <>
             <div className="w-full h-fit mt-8 hidden lg:flex flex-col items-center justify-center">
-                <Suspense fallback={<GameLoader />}>
-                    <div className="border-8 border-secondary rounded-md">
-                        <EthGameComponent ref={phaserRef} />
-                    </div>
-                </Suspense>
+                {address && chainId == 421614 ? (
+                    <Suspense fallback={<GameLoader />}>
+                        <div className="border-8 border-secondary rounded-md">
+                            <EthGameComponent ref={phaserRef} />
+                        </div>
+                    </Suspense>) : (
+                    <GameLoader />
+                )}
             </div>
             <div className="w-[80%] max-w-[1000px] h-fit min-h-[300px] lg:hidden flex flex-col items-center justify-center text-justify">
                 <h2 className="text-left w-full text-2xl font-bold my-2">
@@ -41,13 +46,14 @@ export default GameComponent;
 
 function GameLoader() {
     return (
-        <div className="w-[1000px] h-[600px] bg-secondary rounded-lg p-1">
+        <div className="relative w-[1000px] h-[600px] bg-secondary border-8 border-secondary rounded-md p-1 flex items-center justify-center bg-[url('/assets/background.png')]">
             <Image
-                src="/assets/background.png"
-                width={1000}
-                height={700}
-                alt="Loader"
+                src="/assets/knight.png"
+                width={170}
+                height={170}
+                alt="Loader Knight"
+                className="absolute animate-spin"
             />
         </div>
-    )
+    );
 }
