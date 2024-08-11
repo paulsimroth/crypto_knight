@@ -53,19 +53,21 @@ export default function RootLayout({
     return (
         <html lang='en'>
             <WagmiClientWrapper>
-                <body className='h-[100vh]'>
+                <body className='h-[100vh] flex flex-col items-center justify-between'>
                     <ThemeProvider
                         attribute="class"
                         defaultTheme="system"
                         enableSystem
                         disableTransitionOnChange
                     >
+                        <div className="h-[100vh] w-[100vw] flex flex-col items-center justify-between">
+                            <Navbar />
+                            <main className='flex flex-col items-center justify-center bg-background h-fit'>
+                                {children}
+                            </main>
+                            <Footer />
+                        </div>
                         <Toaster />
-                        <Navbar />
-                        <main className='flex flex-col items-center justify-center bg-background h-fit'>
-                            {children}
-                        </main>
-                        <Footer />
                         <CookieBanner />
                     </ThemeProvider>
                     <GoogleAnalytics gaId={process!.env!.NEXT_PUBLIC_GA_ID!} />

@@ -1,4 +1,5 @@
 import { GAME_HEIGHT, GAME_WIDTH } from '@/components/eth_game/main';
+import { event } from '@/lib/gtag';
 import { Scene } from 'phaser';
 
 export class StartScene extends Scene {
@@ -14,6 +15,8 @@ export class StartScene extends Scene {
             //Images loaded
             this.load.image("knight", "knight.png");
             this.load.image("background", "background.png");
+
+            event("crypto_knights", "start_game", "game_loaded");
         }
     }
 
@@ -41,6 +44,7 @@ export class StartScene extends Scene {
         }).setOrigin(0.5).setDepth(100);
 
         startButton.on('pointerdown', () => {
+            event("crypto_knights", "start_game", "start_game");
             this.scene.start('EthGame');
         });
     }

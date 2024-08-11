@@ -3,6 +3,7 @@ import { EventBus } from '../EventBus';
 import { GAME_HEIGHT, GAME_WIDTH } from '@/components/eth_game/main';
 import { gameScore, mintScore } from '@/service/web3Service';
 import { weiToEther } from '@/service/web3Helpers';
+import { event } from '@/lib/gtag';
 
 type Knight = Phaser.Physics.Arcade.Sprite;
 type TimerEvent = Phaser.Time.TimerEvent;
@@ -185,6 +186,7 @@ export class EthGame extends Scene {
                 this.coinsSent = true;
                 if (this.address && this.chainId) {
                     await mintScore(this.score, this.address, this.chainId);
+                    event("crypto_knights", "main_game", "finished_mint", this.score);
                 }
             }
             EventBus.emit('game_finished', this);
@@ -236,6 +238,7 @@ export class EthGame extends Scene {
             if (this.offScreenTimer === null) {
                 this.offScreenTimer = this.time.delayedCall(OFF_SCREEN_TIMEOUT, () => {
                     console.log("Game over: Knight was off-screen for too long!");
+                    event("crypto_knights", "main_game", "screen_exit_failed", this.score);
                     this.scene.pause();
 
                     if (this.gameOverText) {
